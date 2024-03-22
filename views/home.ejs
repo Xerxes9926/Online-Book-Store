@@ -1,0 +1,254 @@
+<%- include('partials/navbar') %>
+<%- include('partials/second-navbar') %>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Home Page</title>
+  </head>
+  <body>
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ZenQuotes App</title>
+        <style>
+.quote-container {
+  text-align: center;
+  background-image: url("/product-data/images/final.gif");
+  background-size: 100% 100%;
+  background-position: center;
+  border-radius: 10px;
+  padding: 260px;
+  
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+         
+          
+
+blockquote {
+  font-size: 24px;
+  line-height: 1.5;
+  position: absolute; /* Position the blockquote absolutely */
+  top: 130px; /* Adjust top value to control vertical positioning */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Center horizontally */
+}
+
+.author {
+  font-size: 18px;
+  font-style: italic;
+  position: absolute; /* Position the blockquote absolutely */
+  top: 150px; /* Adjust top value to control vertical positioning */
+  left: 80%; /* Center horizontally */
+  transform: translateX(-50%); 
+}
+          #newQuoteBtn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="quote-container">
+          <blockquote><%- quote.text %></blockquote>
+          <p class="author">- <%- quote.author %></p>
+        </div>
+
+        <script>
+          const newQuoteBtn = document.getElementById("newQuoteBtn");
+          newQuoteBtn.addEventListener("click", async () => {
+            try {
+              const response = await fetch("/");
+              const data = await response.json();
+              const quote = data[0];
+              document.querySelector("blockquote").textContent = quote.text;
+              document.querySelector(
+                ".author"
+              ).textContent = `- ${quote.author}`;
+            } catch (error) {
+              console.error("Error fetching quote:", error);
+            }
+          });
+        </script>
+      </body>
+    </html>
+    <div class="section-title" id="new-arrivals">New Arrivals</div>
+    <div class="section-container">
+    <h2 id="new-arrivals"></h2>
+    <% if (newArrivals.length === 0) { %>
+    <p>No new products available.</p>
+    <% } else { %>
+    <ul class="product-list">
+      <% newArrivals.forEach(product => { %>
+      <li class="product-item">
+        <h3><%= product.title %></h3>
+        
+        <p class="price">Price: <%= product.price %> bdt</p>
+        <!-- Display image if available -->
+        <% if (product.image && product.image.path) { %>
+        <img src="<%= product.image.path %>" alt="<%= product.title %>" />
+        <% } %>
+        <a href="/user/products/<%= product._id %>" class="view-details-button"
+          >View Details</a
+        >
+      </li>
+      <% }); %>
+    </ul>
+    <% } %>
+    </div>
+    <div class="section-title" id="featured-products">Featured Products</div>
+    <div class="section-container">
+    <h2 id="featured-products"></h2>
+    <% if (featuredProducts.length === 0) { %>
+    <p>No featured products available.</p>
+    <% } else { %>
+    <ul class="product-list">
+      <% featuredProducts.forEach(product => { %>
+      <li class="product-item">
+        <h3><%= product.title %></h3>
+       
+        <p class="price">Price:<%= product.price %> bdt</p>
+        <!-- Display image if available -->
+        <% if (product.image && product.image.path) { %>
+        <img src="<%= product.image.path %>" alt="<%= product.title %>" />
+        <% } %>
+        <a href="/user/products/<%= product._id %>" class="view-details-button"
+          >View Details</a
+        >
+      </li>
+      <% }); %>
+    </ul>
+    <% } %>
+
+    </div>
+    <div class="section-title" id="top-selling-products">Top Selling Products</div>
+    <div class="section-container">
+    <h2 id="top-selling-products">Top Selling Products</h2>
+    <% if (topSellingProducts.length === 0) { %>
+    <p>No top-selling products available.</p>
+    <% } else { %>
+    <ul class="product-list">
+      <% topSellingProducts.forEach(product => { %>
+      <li class="product-item">
+        <h3><%= product.title %></h3>
+      
+        <p class="price">Price: <%= product.price %> bdt</p>
+        <!-- Display image if available -->
+        <% if (product.image && product.image.path) { %>
+        <img src="<%= product.image.path %>" alt="<%= product.title %>" />
+        <% } %>
+        <a href="/user/products/<%= product._id %>" class="view-details-button"
+          >View Details</a
+        >
+      </li>
+      <% }); %>
+    </ul>
+    <% } %>
+    </div>
+  </body>
+</html>
+<style>
+  /* Featured and Top Selling Products */
+  body {
+    background:linear-gradient(to right, #757f9a, #d7dde8);;
+  }
+  .section-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    padding: 10px;
+    background-color: gray; /* Set the background color to gray */
+    border-radius: 5px;
+    text-align: center;
+    margin: 20px 0; /* Add margin for spacing */
+  }
+  h2 {
+    font-size: 24px;
+    margin-top: 30px;
+    margin-bottom: 10px;
+  }
+
+  .product-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .product-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease;
+  }
+
+  .product-item:hover {
+    background-color: #e0e0e0;
+    cursor: pointer;
+  }
+
+  .product-item img {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+  .product-item h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+
+  .product-item p {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+
+  .product-item p.price {
+    font-weight: bold;
+  }
+
+  /* View Details Button */
+  .view-details-button {
+    display: inline-block;
+    background-color: #4caf50;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .view-details-button:hover {
+    background-color: #45a049;
+  }
+
+  /* ... existing styles ... */
+
+ 
+
+</style>
+
+<%- include('partials/footer') %>

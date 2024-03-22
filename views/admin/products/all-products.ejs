@@ -1,0 +1,113 @@
+<%- include('../../partials/admin-navbar') %>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product List</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <!-- Adjust the path to your CSS file -->
+  </head>
+  <body>
+    <h1>All Books</h1>
+    <div class="product-container">
+      <% products.forEach(product => { %>
+      <div class="product">
+        <h2><%= product.title %></h2>
+
+        <p>Price: $<%= product.price %></p>
+        <img src="<%= product.image.path %>" alt="Product Image" />
+
+        <!-- <a href="/user/products/<%= product._id %>">View Details</a> -->
+      </div>
+      <% }) %>
+    </div>
+    <script type="text/javascript">
+      function search() {
+        let filter = document.getElementById("find").value.toUpperCase();
+
+        let item = document.querySelectorAll(".product");
+
+        let l = document.getElementsByTagName("h2");
+        for (var i = 0; i <= l.length; i++) {
+          let a = item[i].getElementsByTagName("h2")[0];
+          let value = a.innerHTML || a.innerText || a.textContent;
+
+          if (value.toUpperCase().indexOf(filter) > -1) {
+            item[i].style.display = "";
+          } else {
+            item[i].style.display = "none";
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  body {
+    background: linear-gradient(to right, #757f9a, #d7dde8);
+  }
+  /* CSS for the product container */
+  .product {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    width: 220px;
+    height: 360px; /* Equal height and width to make the card square */
+    text-align: center;
+    background-color: #f4e5d0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* CSS for the product title */
+  .product h2 {
+    font-size: 1.4em;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  /* CSS for the product price */
+  .product p {
+    font-size: 1.2em;
+    color: #555;
+    margin-bottom: 5px;
+  }
+
+  /* CSS for the product image */
+  .product img {
+    width: 100%;
+    height: 70%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+  /* CSS for the product summary */
+  .product p.summary {
+    font-size: 1em;
+    color: #777;
+    margin-bottom: 15px;
+  }
+
+  .product a {
+    display: inline-block;
+    background-color: #4caf50;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  /* Change link color on hover */
+  .product a:hover {
+    background-color: #45a049;
+  }
+</style>
+<%- include('../../partials/footer') %>

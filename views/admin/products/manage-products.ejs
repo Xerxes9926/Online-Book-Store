@@ -1,0 +1,517 @@
+<nav>
+  <div class="navbar-container">
+    <div class="navbar-left">
+      <ul>
+        <li><a href="/admin">Book Store</a></li>
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        />
+        
+          
+        </li>
+      </ul>
+    </div>
+    <div class="navbar-middle">
+      <form action="/admin" method="GET">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          name=""
+          id="find"
+          placeholder="Search books"
+          onkeyup="search()"
+        />
+      </form>
+    </div>
+    <div class="navbar-right">
+      <ul>
+        <li><a href="/admin/products"> Manage Products</a></li>
+        <li><a href="/admin/orders"> Manage Orders</a></li>
+        <li><a href="/logout">Log Out</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product List</title>
+
+    <!-- Adjust the path to your CSS file -->
+  </head>
+  <body>
+    <h1>All Books</h1>
+
+    <div class="action-containers">
+      <form action="" method="POST" id="deleteForm" class="form-group">
+        <button type="button" onclick="redirectupdate()">Update-Books</button>
+        <label for="genreToDelete">Select Genre to Delete:</label>
+        <select id="genreToDelete" name="genreToDelete" required>
+          <option value="">Select a Genre</option>
+          <option value="Fiction">Fiction</option>
+          <option value="Novel">Novel</option>
+          <option value="Scientific">Scientific</option>
+          <option value="History">History</option>
+          <option value="Mystery">Mystery</option>
+          <option value="Uncategorized">Uncategorized</option>
+        </select>
+
+        <button type="button" onclick="deleteBooksByGenre()">
+          Delete Genre Books
+        </button>
+      </form>
+    </div>
+    <!-- <form
+        action="/admin/products/update"
+        method="POST"
+        id="updateForm"
+        class="form-group"
+      >
+        <label for="selectedProducts">Select Products to Update:</label>
+        <select
+          id="selectedProducts"
+          name="selectedProducts[]"
+          multiple
+          required
+        >
+          <% products.forEach((product) => { %>
+          <option value="<%= product._id %>"><%= product.title %></option>
+          <% }); %>
+        </select>
+        <label for="updateType">Update Type:</label>
+        <select id="updateType" name="updateType" required>
+          <option value="featured">Featured</option>
+          <option value="topSelling">Top Selling</option>
+        </select>
+        <button type="button" onclick="updateProducts()">
+          Update Products
+        </button>
+      </form> -->
+    <!-- 
+      <script>
+        async function updateProducts() {
+          const selectedProducts = Array.from(
+            document.querySelectorAll("#selectedProducts option:checked")
+          ).map((option) => option.value);
+
+          const updateType = document.getElementById("updateType").value;
+
+          if (!selectedProducts.length) {
+            alert("Please select at least one product to update.");
+            return;
+          }
+
+          if (!updateType) {
+            alert("Please select an update type (Featured or Top Selling).");
+            return;
+          }
+
+          try {
+            const response = await fetch("/admin/products/update", {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                productIds: selectedProducts,
+                updateType,
+              }),
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              alert(data.message); 
+            } else {
+              const errorData = await response.json();
+              alert("Error updating products: " + errorData.error);
+            }
+          } catch (error) {
+            alert("An error occurred: " + error.message);
+          }
+        }
+      </script>
+    </div> -->
+
+    <div class="product-container">
+      <% products.forEach((product) => { %>
+      <div class="product">
+        <h2><%= product.title %></h2>
+
+        <p>Price: $<%= product.price %></p>
+        <p>Genre: <%= product.genre %></p>
+        <img src="<%= product.image.path %>" alt="Product Image" />
+        <!-- 
+        <form
+          action="/admin/products/<%= product._id %>"
+          method="POST"
+          style="display: inline"
+        >
+          <input type="hidden" name="_method" value="DELETE" />
+          <button type="submit" class="delete-button">Delete</button>
+        </form> -->
+      </div>
+      <% }) %>
+    </div>
+    <script type="text/javascript">
+      function search() {
+        let filter = document.getElementById("find").value.toUpperCase();
+        let item = document.querySelectorAll(".product");
+        let l = document.getElementsByTagName("h2");
+        for (var i = 0; i <= l.length; i++) {
+          let a = item[i].getElementsByTagName("h2")[0];
+          let value = a.innerHTML || a.innerText || a.textContent;
+          if (value.toUpperCase().indexOf(filter) > -1) {
+            item[i].style.display = "";
+          } else {
+            item[i].style.display = "none";
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
+<script>
+  async function deleteBooksByGenre() {
+    const genreToDelete = document.getElementById("genreToDelete").value;
+
+    if (!genreToDelete) {
+      alert("Please select a genre to delete.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/admin/category/delete/${encodeURIComponent(genreToDelete)}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(data.message); // Show success message (e.g., 'All Fiction books deleted successfully.')
+        // Optionally, you can reload the page or update the UI to reflect the changes.
+      } else {
+        const errorData = await response.json();
+        alert("deleted genre books: " + errorData.error);
+      }
+    } catch (error) {
+      alert("An error occurred: " + error.message);
+    }
+  }
+</script>
+
+<script>
+  function redirectToNewProduct() {
+    // Redirect to the "/admin/products/new" page to add a new product.
+    window.location.href = "/admin/products/new";
+  }
+</script>
+<script>
+  function redirectupdate() {
+    window.location.href = "/manage";
+  }
+</script>
+<style>
+  /* Reset default margin and padding for all elements */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #757f9a, #d7dde8);
+    margin: 0;
+    padding: 0;
+  }
+
+  h1 {
+    text-align: center;
+    margin: 30px 0;
+    color: #333;
+  }
+
+  p {
+    text-align: center;
+    font-size: 18px;
+    margin: 20px 0;
+    color: #666;
+  }
+
+  a {
+    display: block;
+    text-align: center;
+    margin: 40px 0;
+    text-decoration: none;
+    color: #007bff;
+  }
+
+  a:hover {
+    color: #0056b3;
+  }
+
+  /* Styling for the "All Books" heading */
+  .product-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .product {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 25px;
+    width: 220px;
+    height: 360px; /* Equal height and width to make the card square */
+    text-align: center;
+    background-color: white;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .product h2 {
+    font-size: 1.4em;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .product p {
+    font-size: 1.2em;
+    color: #555;
+    margin-bottom: 5px;
+  }
+
+  .product img {
+    width: 100%;
+    height: 70%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+  .product a {
+    display: inline-block;
+    background-color: #4caf50;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .product:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+  }
+
+  .product a:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+  }
+
+  /* Styling for the action containers */
+  .action-containers {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-right: 100px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 1.1em;
+    color: #333;
+  }
+
+  .form-group select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    width: 200px;
+    background-color: #f9f9f9;
+    color: #333;
+  }
+
+  .form-group select:hover {
+    border-color: #555;
+  }
+
+  .form-group select:focus {
+    outline: none;
+    box-shadow: 0 0 5px #999;
+  }
+
+  .form-group button {
+    padding: 8px 16px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .form-group button:hover {
+    background-color: #45a049;
+  }
+
+  .add-product {
+    display: inline-block;
+    padding: 15px 25px;
+    background-color: #4caf50;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    margin-right: 600px;
+  }
+
+  .add-product:hover {
+    background-color: #45a049;
+  }
+  .delete-button {
+    padding: 6px 12px; /* Adjust the padding to make the button smaller */
+    font-size: 0.9em; /* Adjust the font size if necessary */
+    background-color: #ff0000; /* Customize the background color for the delete button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .delete-button:hover {
+    background-color: #cc0000; /* Change the background color on hover */
+  }
+
+  nav {
+    background-color: #212121;
+    padding: 25px;
+    text-align: center;
+  }
+
+  .navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ... (existing styles) ... */
+
+  .navbar-left ul li {
+    position: relative;
+  }
+
+  .has-dropdown .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #555;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 5px;
+  }
+
+  .has-dropdown:hover .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-menu li {
+    padding: 10px;
+  }
+
+  .dropdown-menu li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+  }
+
+  .dropdown-menu li a:hover {
+    background-color: #777;
+  }
+
+  .navbar-right ul {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .navbar-middle form {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-middle input[type="text"] {
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    width: 300px;
+    font-size: 18px;
+  }
+
+  .navbar-middle button {
+    padding: 10px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+  }
+
+  li {
+    display: inline;
+    margin-right: 10px;
+  }
+
+  li a {
+    text-decoration: none;
+    color: #fff0f0;
+    font-size: 18px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+  }
+
+  li a:hover {
+    background-color: #888888;
+    color: #ffffff;
+  }
+
+  .fa-shopping-cart {
+    margin-right: 13px;
+  }
+</style>
+<%- include('../../partials/footer') %>
